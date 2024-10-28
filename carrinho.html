@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <title>Carrinho de Compras</title>
+    
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="carrinho.html">Carrinho</a></li>
+                <li><a href="checkout.html">Checkout</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <h1>Carrinho de Compras</h1>
+        <section id="produtos-carrinho">
+            <!-- Produtos do carrinho serão carregados aqui pelo script.js -->
+        </section>
+        <h2 id="total-carrinho">Total: R$ 0,00</h2>
+    </main>
+
+    <footer>
+        <p>
+            <a href="informacoes.html">Informações da Loja</a> - 
+            <a href="formas-pagamento.html">Formas de Pagamento</a> - 
+            <a href="redes-sociais.html">Redes Sociais</a> - 
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const carrinhoContainer = document.getElementById('produtos-carrinho');
+            const totalContainer = document.getElementById('total-carrinho');
+    
+            // Função para atualizar o carrinho visualmente
+            function atualizarCarrinho() {
+                carrinhoContainer.innerHTML = '';
+                let total = 0;
+    
+                carrinho.forEach(item => {
+                    fetch(`https://dummyjson.com/products/${item.id}`)
+                        .then(response => response.json())
+                        .then(produto => {
+                            total += produto.price * item.quantidade;
+    
+                            const produtoDiv = document.createElement('div');
+                            produtoDiv.classList.add('produto-carrinho');
+                            produtoDiv.innerHTML = `
+                                <img src="${produto.thumbnail}" alt="${produto.title}">
+                                <div class="produto-carrinho-info">
+                                    <h2>${produto.title}</h2>
+                                    <p>Preço: R$ ${produto.price.toFixed(2)}</p>
+                                    <label>Quantidade: 
+                                        <input type="number" min="1" value="${item.quantidade}" data-id="${item.id}" class="quantidade-input">
+                                    </label>
+                                </div>
+                                <button onclick="removerDoCarrinho(${item.id})">Remover</button>
+                            `;
+                            carrinhoContainer.appendChild(produtoDiv);
+                            totalContainer.textContent = `Total: R$ ${total.toFixed(2)}`;
+                        })
+                        .catch(error => console.error('Erro ao carregar produto do carrinho:', error));
+                });
+    
+                // Adicionar eventos de alteração de quantidade após o DOM estar atualizado
+                setTimeout(() => {
+                    const quantidadeInputs = document.querySelectorAll('.quantidade-input');
+                    quantidadeInputs.forEach(input => {
+                        input.addEventListener('change', (event) => {
+                            alterarQuantidade(event.target.dataset.id, event.target.value);
+                        });
+                    });
+                }, 500);
+            }
+    
+            atualizarCarrinho();
+    
+            // Função para alterar quantidade
+            function alterarQuantidade(produtoId, quantidade) {
+                let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+                const produto = carrinho.find(p => p.id === parseInt(produtoId));
+                if (produto && quantidade > 0) {
+                    produto.quantidade = parseInt(quantidade);
+                    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+                    atualizarCarrinho();
+                }
+            }
+    
+            // Função para remover do carrinho
+            window.removerDoCarrinho = (produtoId) => {
+                let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+                carrinho = carrinho.filter(produto => produto.id !== produtoId);
+                localStorage.setItem('carrinho', JSON.stringify(carrinho));
+                atualizarCarrinho();
+            };
+        });
+    </script>
+    
+</body>
+</html>

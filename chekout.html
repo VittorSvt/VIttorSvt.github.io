@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Checkout</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="carrinho.html">Carrinho</a></li>
+                <li><a href="chekout.html">Checkout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+  
+    
+    
+    <main>
+        <section id="checkout">
+            <h1>Finalizar Compra</h1>
+            <form id="checkout-form">
+                <div>
+                    <label for="nome">Nome Completo:</label>
+                    <input type="text" id="nome" required>
+                </div>
+                <div>
+                    <label for="endereco">Endereço de Entrega:</label>
+                    <input type="text" id="endereco" required>
+                </div>
+                <div>
+                    <label for="pagamento">Método de Pagamento:</label>
+                    <select id="pagamento" required>
+                        <option value="credito">Cartão de Crédito</option>
+                        <option value="debito">Cartão de Débito</option>
+                        <option value="boleto">Boleto Bancário</option>
+                    </select>
+                </div>
+                <button type="submit">Finalizar Compra</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>
+            <a href="informacoes.html">Informações da Loja</a> - 
+            <a href="formas-pagamento.html">Formas de Pagamento</a> - 
+            <a href="redes-sociais.html">Redes Sociais</a> - 
+        </p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

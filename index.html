@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <title>E-commerce - Página Inicial</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="carrinho.html">Carrinho</a></li>
+                <li><a href="checkout.html">Checkout</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <h1>Produtos Disponíveis</h1>
+        <input type="text" id="busca" placeholder="Buscar produtos por nome...">
+        
+        <section id="produtos">
+            <!-- Produtos serão carregados aqui pelo script.js -->
+        </section>
+    </main>
+
+    <footer>
+        <p>
+            <a href="informacoes.html">Informações da Loja</a> - 
+            <a href="formas-pagamento.html">Formas de Pagamento</a> - 
+            <a href="redes-sociais.html">Redes Sociais</a>
+        </p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let produtosCache = [];
+            const produtosContainer = document.getElementById('produtos');
+            const buscaInput = document.getElementById('busca');
+
+            // Função para exibir produtos
+            function exibirProdutos(produtos) {
+                produtosContainer.innerHTML = '';
+                produtos.forEach(produto => {
+                    const produtoDiv = document.createElement('div');
+                    produtoDiv.classList.add('produto');
+                    produtoDiv.innerHTML = `
+                        <h2>${produto.title}</h2>
+                        <p>Preço: R$ ${produto.price.toFixed(2)}</p>
+                        <img src="${produto.thumbnail}" alt="${produto.title}" style="width: 100%; height: auto;">
+                        <a href="produto.html?id=${produto.id}">Ver Detalhes</a>
+                        <button onclick="adicionarAoCarrinho(${produto.id})">Adicionar ao Carrinho</button>
+                    `;
+                    produtosContainer.appendChild(produtoDiv);
+                });
+            }
+
+            // Buscar produtos da API
+            fetch('https://dummyjson.com/products')
+                .then(response => response.json())
+                .then(data => {
+                    produtosCache = data.products;
+                    exibirProdutos(produtosCache);
+                })
+                .catch(error => console.error('Erro ao carregar produtos:', error));
+
+            // Filtrar produtos ao digitar no campo de busca
+            buscaInput.addEventListener('input', () => {
+                const termoBusca = buscaInput.value.toLowerCase();
+                const produtosFiltrados = produtosCache.filter(produto =>
+                    produto.title.toLowerCase().includes(termoBusca)
+                );
+                exibirProdutos(produtosFiltrados);
+            });
+        });
+    </script>
+</body>
+</html>
